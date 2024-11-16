@@ -22,27 +22,98 @@ const NUMS = [
 ];
 
 export const App = () => {
-	const [operand1, setOperand1] = useState('');
+	const [operand1, setOperand1] = useState('0');
 	const [operator, setOperator] = useState('');
-	const [operand2, setOperand2] = useState(0);
+	const [operand2, setOperand2] = useState('');
 
-	const clickForUpdateOperand = event => {
-		const firstOperand = event.target.innerHTML;
-		// console.log(firstOperand);
-		setOperand1(operand1 + firstOperand);
+	// const [isCalculating, setIsCalculating] = useState('');
+
+	// const [result, setResult] = useState(0);
+	// let result = 0;
+
+	const handleClickOnNumber = value => {
+		// setIsCalculating(true);
+
+		if (!operator) {
+			console.log('set operand 1');
+			if (operand1 === '0') {
+				setOperand1(value);
+			} else {
+				setOperand1(operand1 + value);
+			}
+		} else {
+			console.log('set operand 2');
+			if (operand2 === '0') {
+				setOperand2(value);
+			} else {
+				setOperand2(operand2 + value);
+			}
+		}
 	};
 
-	const clearing = () => {
-		setOperand1('');
+	const handleClickOnOperator = value => {
+		console.log('here operator');
+		// if (operand2 === '') {
+		// 	setOperator('');
+		// } else {
+
+		setOperator(value);
+
+		// setOperator(value);
+	};
+
+	const handleResult = operator => {
+		console.log('here =');
+
+		switch (operator) {
+			case '+':
+				// console.log(operand1);
+				// console.log(operand2);
+				setOperand1(Number(operand1) + Number(operand2));
+				break;
+			case '-':
+				setOperand1(Number(operand1) - Number(operand2));
+				// console.log(operand1);
+				// console.log(operand2);
+				break;
+			case '*':
+				setOperand1(Number(operand1) * Number(operand2));
+				// console.log(operand1);
+				// console.log(operand2);
+				break;
+			case '/':
+				setOperand1(Number(operand1) / Number(operand2));
+				// console.log(operand1);
+				// console.log(operand2);
+				break;
+			default:
+				break;
+			// }
+		}
+
 		setOperator('');
 		setOperand2('');
 	};
+
+	const handleReset = () => {
+		setOperand1('0');
+		setOperator('');
+		setOperand2('');
+	};
+
+	const output = (
+		<>
+			{operand1}
+			{operator}
+			{operand2}
+		</>
+	);
 
 	return (
 		<div className={styles.container}>
 			<div>
 				<h1>Output</h1>
-				<span>{operand1 ? operand1 : '0'}</span>
+				<span>{output}</span>
 			</div>
 			<div>
 				<h1>Special</h1>
@@ -50,7 +121,7 @@ export const App = () => {
 					{NUMS.map(el => {
 						return el.group === 'special' ? (
 							<li key={el.id}>
-								<button type="button" onClick={clearing}>
+								<button type="button" onClick={handleReset}>
 									{el.item}
 								</button>
 							</li>
@@ -68,7 +139,7 @@ export const App = () => {
 							<li key={el.id}>
 								<button
 									type="button"
-									onClick={event => clickForUpdateOperand(event)}
+									onClick={() => handleClickOnNumber(el.item)}
 								>
 									{el.item}
 								</button>
@@ -85,7 +156,16 @@ export const App = () => {
 					{NUMS.map(el => {
 						return el.group === 'operators' ? (
 							<li key={el.id}>
-								<button type="button">{el.item}</button>
+								<button
+									type="button"
+									onClick={() =>
+										el.item === '='
+											? handleResult(operator)
+											: handleClickOnOperator(el.item)
+									}
+								>
+									{el.item}
+								</button>
 							</li>
 						) : (
 							''
